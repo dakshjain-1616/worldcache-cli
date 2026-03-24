@@ -1,0 +1,22 @@
+# WorldCache CLI dependencies
+# Install with: pip install -r requirements.txt
+
+# Image processing (frame decoding, resizing, colour conversion)
+Pillow>=9.5.0
+
+# Numerical operations (arrays, DCT, hash packing)
+numpy>=1.24.0
+
+# CLI framework
+click>=8.1.0
+
+# Rich terminal output (progress bars, tables, colours)
+rich>=13.4.0
+
+# Video file reading (optional — only required for real .mp4/.avi files)
+# Uncomment to enable: pip install opencv-python
+# opencv-python>=4.8.0
+
+# Testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
