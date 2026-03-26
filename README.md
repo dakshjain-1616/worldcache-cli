@@ -9,7 +9,56 @@
 
 **WorldCache slashes the number of frames your world model processes by 70–90% — with zero changes to the model itself.**
 
----
+## Quickstart
+
+```python
+from worldcache import VideoProcessor
+from worldcache.hasher import HashAlgorithm
+
+# Initialize processor with default settings
+processor = VideoProcessor(
+    similarity_threshold=0.92,
+    algorithm=HashAlgorithm.DHASH,
+    window_size=32,
+)
+
+# Process a directory of frames
+result = processor.process_directory("frames/", output_dir="cache/")
+
+print(f"Cache hit rate: {result.cache_hit_rate:.1%}")
+print(f"RAM reduction: {result.ram_reduction_pct:.1f}%")
+print(f"Frames saved: {result.cached_frames}/{result.total_frames}")
+```
+
+## Example Output
+
+```json
+{
+  "source": "frames/",
+  "total_frames": 1800,
+  "anchor_frames": 216,
+  "cached_frames": 1584,
+  "cache_hit_rate": 0.88,
+  "ram_reduction_pct": 88.0,
+  "bytes_saved": 456192000,
+  "elapsed_seconds": 3.42,
+  "output_dir": "cache/",
+  "output_files": ["metadata.json", "anchors.npz"]
+}
+```
+
+```mermaid
+graph TD
+    A[Video Input] --> B[Frame Extraction]
+    B --> C[Perceptual Hashing]
+    C --> D{Similarity Check}
+    D -->|Novel Frame| E[World Model Processing]
+    D -->|Duplicate Frame| F[Frame Skipped]
+    E --> G[Model Prediction]
+    F --> H[Cache Statistics]
+    G --> H
+    H --> I[Output Results]
+```
 
 ## The Problem
 
@@ -20,8 +69,6 @@ Real video is brutally redundant. At 30 fps, one minute of footage produces 1,80
 WorldCache sits in front of your world model as a lightweight perceptual cache. Before each frame is processed, WorldCache computes its perceptual hash and compares it against a sliding window of recently-seen anchor frames. If the new frame is too similar to a recent anchor — above your configured threshold — it is marked as a cache hit and skipped entirely. Only genuinely novel frames (anchors) are forwarded to the model.
 
 No GPU. No retraining. No changes to your model architecture. Just a thin preprocessing layer that pays for itself immediately.
-
----
 
 ## Install
 
@@ -35,8 +82,6 @@ pip install -e .
 > **MP4 support:** By default, WorldCache processes directories of image frames (JPEG/PNG). To process `.mp4` files directly, uncomment `opencv-python` in `requirements.txt` and reinstall.
 
 **Requirements:** Python 3.8+, Pillow>=9.5, numpy>=1.24, click>=8.1, rich>=13.4. No GPU required.
-
----
 
 ## CLI Quickstart
 
@@ -90,8 +135,6 @@ worldcache benchmark frames/ --algorithms dhash,phash,ahash
 ```
 
 Runs each specified algorithm over the same frame set and prints a comparison table of cache hit rate, speed, and anchor frame count. Use this to pick the right algorithm for your footage.
-
----
 
 ## Python API
 
@@ -188,8 +231,6 @@ print(f"World model saw {stats.anchor_frames} frames ({stats.cache_hit_rate:.1%}
 | `elapsed_seconds` | `float` | Wall-clock processing time |
 | `output_dir` | `str` | Output directory path |
 
----
-
 ## Hash Algorithms
 
 WorldCache supports four perceptual hashing algorithms. All are CPU-only and run in microseconds per frame.
@@ -209,8 +250,6 @@ WorldCache supports four perceptual hashing algorithms. All are CPU-only and run
 
 Run `worldcache benchmark` on a sample of your footage to find the right combination for your use case.
 
----
-
 ## Configuration
 
 WorldCache reads defaults from environment variables so you can configure it once for a project without passing flags every time.
@@ -228,8 +267,6 @@ WORLDCACHE_WINDOW_SIZE=64
 ```
 
 CLI flags always override environment variables.
-
----
 
 ## Project Structure
 
@@ -255,8 +292,6 @@ worldcache-cli/
 └── pytest.ini
 ```
 
----
-
 ## Run Tests
 
 ```bash
@@ -270,8 +305,6 @@ pytest tests/ -q
 ```
 82 passed
 ```
-
----
 
 ## License
 
