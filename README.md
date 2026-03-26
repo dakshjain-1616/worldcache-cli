@@ -7,8 +7,6 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![GitHub](https://img.shields.io/badge/GitHub-worldcache--cli-181717?logo=github)](https://github.com/dakshjain-1616/worldcache-cli)
 
-**WorldCache slashes the number of frames your world model processes by 70–90% — with zero changes to the model itself.**
-
 ## Quickstart
 
 ```python
@@ -59,6 +57,8 @@ graph TD
     G --> H
     H --> I[Output Results]
 ```
+
+**WorldCache slashes the number of frames your world model processes by 70–90% — with zero changes to the model itself.**
 
 ## The Problem
 
